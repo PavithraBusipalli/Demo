@@ -3,7 +3,6 @@ from commons.abstract_lambda import AbstractLambda
 
 _LOG = get_logger('HelloWorld-handler')
 
-
 class HelloWorld(AbstractLambda):
 
     def validate_request(self, event) -> dict:
@@ -11,14 +10,21 @@ class HelloWorld(AbstractLambda):
         
     def handle_request(self, event, context):
         """
-        Explain incoming event here
+        Handle the incoming event and return the correct response.
         """
-        # todo implement business logic
-        return 200
+        # You might want to log the event or perform other operations here.
+        
+        # Return the expected response
+        response = {
+            "statusCode": 200,
+            "message": "Hello from Lambda"
+        }
+    
+        return response
     
 
 HANDLER = HelloWorld()
 
-
 def lambda_handler(event, context):
-    return HANDLER.lambda_handler(event=event, context=context)
+    # Ensure that lambda_handler calls handle_request and returns the result.
+    return HANDLER.handle_request(event, context)
