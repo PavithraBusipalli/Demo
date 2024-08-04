@@ -1,5 +1,5 @@
 {
-  "sqs_handler-role": {
+  "sns_handler-role": {
     "predefined_policies": [],
     "principal_service": "lambda",
     "custom_policies": [

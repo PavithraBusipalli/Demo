@@ -1,36 +1,24 @@
-import json
-import uuid
-from datetime import datetime
-import boto3
-from botocore.exceptions import ClientError
+from commons.log_helper import get_logger
+from commons.abstract_lambda import AbstractLambda
 
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('Events')
+_LOG = get_logger('ApiHandler-handler')
+
+
+class ApiHandler(AbstractLambda):
+
+    def validate_request(self, event) -> dict:
+        pass
+        
+    def handle_request(self, event, context):
+        """
+        Explain incoming event here
+        """
+        # todo implement business logic
+        return 200
+    
+
+HANDLER = ApiHandler()
+
 
 def lambda_handler(event, context):
-    try:
-        body = json.loads(event['body'])
-        event_id = str(uuid.uuid4())
-        created_at = datetime.utcnow().isoformat()
-
-        item = {
-            'id': event_id,
-            'principalId': body['principalId'],
-            'createdAt': created_at,
-            'body': body['content']
-        }
-
-        table.put_item(Item=item)
-
-        response = {
-            'statusCode': 201,
-            'body': json.dumps(item)
-        }
-
-        return response
-
-    except ClientError as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'error': str(e)})
-        }
+    return HANDLER.lambda_handler(event=event, context=context)

@@ -6,8 +6,8 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     for record in event['Records']:
-        message_body = record['body']
-        logger.info(f"SQS Message Body: {message_body}")
+        sns_message = record['Sns']['Message']
+        logger.info(f"SNS Message: {sns_message}")
     return {
         'statusCode': 200,
         'body': json.dumps('Message logged successfully!')

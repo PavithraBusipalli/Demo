@@ -1,7 +1,7 @@
-from tests.test_sqs_handler import SqsHandlerLambdaTestCase
+from tests.test_api_handler import ApiHandlerLambdaTestCase
 
 
-class TestSuccess(SqsHandlerLambdaTestCase):
+class TestSuccess(ApiHandlerLambdaTestCase):
 
     def test_success(self):
         self.assertEqual(self.HANDLER.handle_request(dict(), dict()), 200)

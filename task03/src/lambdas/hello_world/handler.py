@@ -1,30 +1,36 @@
-from commons.log_helper import get_logger
-from commons.abstract_lambda import AbstractLambda
+import json
+import uuid
+from datetime import datetime
+import boto3
+from botocore.exceptions import ClientError
 
-_LOG = get_logger('HelloWorld-handler')
-
-class HelloWorld(AbstractLambda):
-
-    def validate_request(self, event) -> dict:
-        pass
-        
-    def handle_request(self, event, context):
-        """
-        Handle the incoming event and return the correct response.
-        """
-        # You might want to log the event or perform other operations here.
-        
-        # Return the expected response
-        response = {
-            "statusCode": 200,
-            "message": "Hello from Lambda"
-        }
-    
-        return response
-    
-
-HANDLER = HelloWorld()
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('Events')
 
 def lambda_handler(event, context):
-    # Ensure that lambda_handler calls handle_request and returns the result.
-    return HANDLER.handle_request(event, context)
+    try:
+        body = json.loads(event['body'])
+        event_id = str(uuid.uuid4())
+        created_at = datetime.utcnow().isoformat()
+
+        item = {
+            'id': event_id,
+            'principalId': body['principalId'],
+            'createdAt': created_at,
+            'body': body['content']
+        }
+
+        table.put_item(Item=item)
+
+        response = {
+            'statusCode': 201,
+            'body': json.dumps(item)
+        }
+
+        return response
+
+    except ClientError as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }
