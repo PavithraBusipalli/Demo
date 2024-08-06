@@ -25,67 +25,66 @@ import java.util.Map;
 import java.util.UUID;
 
 @LambdaHandler(lambdaName = "uuid_generator",
-                roleName = "uuid_generator-role",
-                isPublishVersion = false,
-                logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
+		roleName = "uuid_generator-role",
+		isPublishVersion = false,
+		logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 @RuleEventSource(
-        targetRule = "uuid_trigger"
+		targetRule = "uuid_trigger"
 )
 @DependsOn(
-        name = "uuid_trigger",
-        resourceType = ResourceType.CLOUDWATCH_RULE
+		name = "uuid_trigger",
+		resourceType = ResourceType.CLOUDWATCH_RULE
 )
 @EnvironmentVariables(value = {
-        @EnvironmentVariable(key = "target_bucket", value = "${target_bucket}"),
-        @EnvironmentVariable(key = "region", value = "${region}")
+		@EnvironmentVariable(key = "target_bucket", value = "${target_bucket}"),
+		@EnvironmentVariable(key = "region", value = "${region}")
 })
 public class UuidGenerator implements RequestHandler<ScheduledEvent, Map<String, Object>> {
 
-    private static final String BUCKET_NAME = System.getenv("target_bucket");
+	private static final String BUCKET_NAME = System.getenv("target_bucket");
 
-    @Override
-    public Map<String, Object> handleRequest(ScheduledEvent event, Context context) {
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                .withRegion(System.getenv("region"))
-                .build();
-        List<String> uuids = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            uuids.add(UUID.randomUUID().toString());
-        }
-        String filename = "uuids_" + Instant.now().toString() + ".txt";
+	@Override
+	public Map<String, Object> handleRequest(ScheduledEvent event, Context context) {
+		AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard()
+				.withRegion(System.getenv("region"))
+				.build();
+		String key = Instant.now().toString();
 
-        File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + filename);
-        try (FileWriter writer = new FileWriter(tempFile)) {
-            writer.write(String.join("\n", uuids));
-            context.getLogger().log("File written successfully: " + tempFile.getAbsolutePath());
-        } catch (IOException e) {
-            context.getLogger().log("Error writing to temporary file: " + e.getMessage());
-            Map<String, Object> errorResponse = createErrorResponse(e.getMessage());
-            return errorResponse;
-        }
+		List<String> uuids = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			uuids.add(UUID.randomUUID().toString());
+		}
 
-        try {
-            s3Client.putObject(new PutObjectRequest(BUCKET_NAME, filename, tempFile));
-            context.getLogger().log("Successfully uploaded UUIDs to S3: " + BUCKET_NAME + "/" + filename);
-        } catch (Exception e) {
-            context.getLogger().log("Error uploading file to S3: " + e.getMessage());
-            Map<String, Object> errorResponse = createErrorResponse(e.getMessage());
-            return errorResponse;
-        } finally {
-            tempFile.delete(); // Cleanup the temporary file after upload
-        }
+		String content = "{\n  \"ids\": [\n    \"" + String.join("\",\n    \"", uuids) + "\"\n  ]\n}";
+		File file = new File("/tmp/AWS.txt");
 
-        Map<String, Object> successResponse = new HashMap<>();
-        successResponse.put("statusCode", 200);
-        successResponse.put("body", "UUIDs generated and stored successfully.");
-        return successResponse;
-    }
+		try (FileWriter writer = new FileWriter(file)) {
+			writer.write(content);
+			context.getLogger().log("File written successfully: " + file.getAbsolutePath());
+		} catch (IOException e) {
+			e.printStackTrace();
+			Map<String, Object> errorResult = new HashMap<>();
+			errorResult.put("statusCode", 500);
+			errorResult.put("body", "Error writing to file: " + e.getMessage());
+			return errorResult;
+		}
 
-    private Map<String, Object> createErrorResponse(String errorMessage) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("statusCode", 500);
-        errorResponse.put("body", "Error: " + errorMessage);
-        return errorResponse;
-    }
+		try {
+			amazonS3.putObject(new PutObjectRequest(BUCKET_NAME, key, file));
+			context.getLogger().log("File uploaded successfully to S3: " + BUCKET_NAME + "/" + key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Map<String, Object> errorResult = new HashMap<>();
+			errorResult.put("statusCode", 500);
+			errorResult.put("body", "Error uploading file to S3: " + e.getMessage());
+			return errorResult;
+		}
+
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("statusCode", 200);
+		resultMap.put("body", "UUIDs generated and stored in S3 bucket");
+
+		return resultMap;
+	}
 }
