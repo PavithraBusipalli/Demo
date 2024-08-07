@@ -15,10 +15,6 @@
             "ssm:PutParameter",
             "ssm:GetParameter",
             "kms:Decrypt",
-            "gateway:POST",
-            "gateway:GET",
-            "gateway:PUT",
-            "gateway:DELETE",
             "dynamodb:GetRecords",
             "dynamodb:GetShardIterator",
             "dynamodb:DescribeStream",
@@ -32,7 +28,7 @@
     },
     "resource_type": "iam_policy"
   },
-  "api_handler-role": {
+  "audit_producer-role": {
     "predefined_policies": [],
     "principal_service": "lambda",
     "custom_policies": [
@@ -40,29 +36,16 @@
     ],
     "resource_type": "iam_role"
   },
-  "task5_api": {
-    "resource_type": "api_gateway",
-    "deploy_stage": "api",
-    "dependencies": [],
-    "resources": {
-      "/events": {
-        "enable_cors": false,
-        "POST": {
-          "authorization_type": "NONE",
-          "integration_type": "lambda",
-          "lambda_name": "api_handler",
-          "api_key_required": false,
-          "method_request_parameters": {},
-          "integration_request_body_template": {},
-          "responses": [],
-          "integration_responses": [],
-          "default_error_pattern": true
-        }
-      }
-    },
-    "minimum_compression_size": 0
+  "Configuration": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "key",
+    "hash_key_type": "S",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [],
+    "autoscaling": []
   },
-  "Events": {
+  "Audit": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "id",
     "hash_key_type": "S",
