@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>task07-group</groupId>
-    <artifactId>task07</artifactId>
+    <groupId>task04-group</groupId>
+    <artifactId>task04</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -17,50 +17,21 @@
         <src.dir>jsrc/main/java</src.dir>
         <resources.dir>jsrc/main/resources</resources.dir>
     </properties>
-    <dependencies>
-        <!-- AWS SDK for S3 -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.404</version>
-        </dependency>
 
-        <!-- AWS Lambda Java Core -->
+    <dependencies>
+        <!-- AWS dependencies-->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-core</artifactId>
             <version>1.2.0</version>
         </dependency>
-
-        <!-- AWS Lambda Java Events (optional) -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-events</artifactId>
-            <version>3.11.0</version>
-        </dependency>
-
-        <!-- Syndicate Annotations -->
+        <!--Syndicate annotations-->
         <dependency>
             <groupId>net.sf.aws-syndicate</groupId>
             <artifactId>deployment-configuration-annotations</artifactId>
             <version>${syndicate.java.plugin.version}</version>
         </dependency>
-
-        <!-- SLF4J for logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-
-        <!-- Logback for advanced logging (optional) -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
-        </dependency>
     </dependencies>
-
     <build>
         <sourceDirectory>${src.dir}</sourceDirectory>
         <resources>
@@ -69,14 +40,13 @@
             </resource>
         </resources>
         <plugins>
-            <!-- Syndicate plugin for deployment configuration -->
             <plugin>
                 <groupId>net.sf.aws-syndicate</groupId>
                 <artifactId>deployment-configuration-maven-plugin</artifactId>
                 <version>${syndicate.java.plugin.version}</version>
                 <configuration>
                     <packages>
-                        <package>com.task07</package>
+                        <package>com.task04</package>
                     </packages>
                     <fileName>${project.name}-${project.version}.jar</fileName>
                 </configuration>
@@ -92,8 +62,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Maven Shade Plugin to create an uber JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -122,4 +90,7 @@
             </plugin>
         </plugins>
     </build>
+
+
+
 </project>
