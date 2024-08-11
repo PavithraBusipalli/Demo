@@ -13,8 +13,6 @@
             "dynamodb:Batch*",
             "dynamodb:DeleteItem",
             "dynamodb:Scan",
-            "dynamodb:DescribeTimeToLive",
-            "dynamodb:UpdateTimeToLive",
             "ssm:PutParameter",
             "ssm:GetParameter",
             "kms:Decrypt",
@@ -38,50 +36,6 @@
     },
     "resource_type": "iam_policy"
   },
-  "resources": [
-    {
-      "type": "s3_bucket",
-      "name": "task11_api_ui",
-      "properties": {
-        "bucket_name": "task11-api-ui-bucket",
-        "website_configuration": {
-          "index_document": "index.html",
-          "error_document": "404.html"
-        }
-      }
-    },
-    {
-      "type": "s3_bucket",
-      "name": "swagger-ui-bucket",
-      "properties": {
-        "bucket_name": "my-swagger-ui-bucket",
-        "website_configuration": {
-          "index_document": "index.html",
-          "error_document": "404.html"
-        }
-      }
-    },
-    {
-      "type": "dynamodb_table",
-      "name": "Tables",
-      "properties": {
-        "hash_key_name": "id",
-        "hash_key_type": "N",
-        "read_capacity": 1,
-        "write_capacity": 1
-      }
-    },
-    {
-      "type": "dynamodb_table",
-      "name": "Reservations",
-      "properties": {
-        "hash_key_name": "id",
-        "hash_key_type": "S",
-        "read_capacity": 1,
-        "write_capacity": 1
-      }
-    }
-  ],
   "simple-booking-userpool": {
     "resource_type": "cognito_idp",
     "password_policy": {
@@ -105,6 +59,56 @@
         "ALLOW_REFRESH_TOKEN_AUTH",
         "ALLOW_USER_PASSWORD_AUTH"
       ]
+    }
+  },
+  "Tables": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "id",
+    "hash_key_type": "N",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [],
+    "autoscaling": []
+  },
+  "Reservations": {
+    "resource_type": "dynamodb_table",
+    "hash_key_name": "id",
+    "hash_key_type": "S",
+    "read_capacity": 1,
+    "write_capacity": 1,
+    "global_indexes": [],
+    "autoscaling": []
+  },
+  "api-ui-hoster": {
+    "resource_type": "s3_bucket",
+    "acl": "public-read",
+    "cors": [],
+    "policy": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "PublicReadGetObject",
+          "Effect": "Allow",
+          "Principal": "*",
+          "Action": [
+            "s3:GetObject"
+          ],
+          "Resource": [
+            "arn:aws:s3:::{bucket_name}/*"
+          ]
+        }
+      ]
+    },
+    "public_access_block": {
+      "block_public_acls": false,
+      "ignore_public_acls": false,
+      "block_public_policy": false,
+      "restrict_public_buckets": false
+    },
+    "website_hosting": {
+      "enabled": true,
+      "index_document": "index.html",
+      "error_document": "error.html"
     }
   }
 }
