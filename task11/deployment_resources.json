@@ -1,0 +1,110 @@
+{
+  "lambda-basic-execution": {
+    "policy_content": {
+      "Statement": [
+        {
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "dynamodb:GetItem",
+            "dynamodb:Query",
+            "dynamodb:PutItem",
+            "dynamodb:Batch*",
+            "dynamodb:DeleteItem",
+            "dynamodb:Scan",
+            "dynamodb:DescribeTimeToLive",
+            "dynamodb:UpdateTimeToLive",
+            "ssm:PutParameter",
+            "ssm:GetParameter",
+            "kms:Decrypt",
+            "cognito-idp:DescribeUserPool",
+            "cognito-idp:GetUser",
+            "cognito-idp:ListUsers",
+            "cognito-idp:AdminCreateUser",
+            "cognito-idp:AdminInitiateAuth",
+            "cognito-idp:GetIdentityProviderByIdentifier",
+            "cognito-idp:ListUserPools",
+            "cognito-idp:ListUserPoolClients",
+            "cognito-idp:AdminRespondToAuthChallenge",
+            "cognito-idp:AdminConfirmSignUp",
+            "cognito-idp:AdminSetUserPassword"
+          ],
+          "Effect": "Allow",
+          "Resource": "*"
+        }
+      ],
+      "Version": "2012-10-17"
+    },
+    "resource_type": "iam_policy"
+  },
+  "resources": [
+    {
+      "type": "s3_bucket",
+      "name": "task11_api_ui",
+      "properties": {
+        "bucket_name": "task11-api-ui-bucket",
+        "website_configuration": {
+          "index_document": "index.html",
+          "error_document": "404.html"
+        }
+      }
+    },
+    {
+      "type": "s3_bucket",
+      "name": "swagger-ui-bucket",
+      "properties": {
+        "bucket_name": "my-swagger-ui-bucket",
+        "website_configuration": {
+          "index_document": "index.html",
+          "error_document": "404.html"
+        }
+      }
+    },
+    {
+      "type": "dynamodb_table",
+      "name": "Tables",
+      "properties": {
+        "hash_key_name": "id",
+        "hash_key_type": "N",
+        "read_capacity": 1,
+        "write_capacity": 1
+      }
+    },
+    {
+      "type": "dynamodb_table",
+      "name": "Reservations",
+      "properties": {
+        "hash_key_name": "id",
+        "hash_key_type": "S",
+        "read_capacity": 1,
+        "write_capacity": 1
+      }
+    }
+  ],
+  "simple-booking-userpool": {
+    "resource_type": "cognito_idp",
+    "password_policy": {
+      "minimum_length": 12,
+      "require_uppercase": true,
+      "require_symbols": true,
+      "require_lowercase": true,
+      "require_numbers": true
+    },
+    "auto_verified_attributes": [],
+    "sms_configuration": {},
+    "username_attributes": [],
+    "custom_attributes": [],
+    "client": {
+      "client_name": "client-app",
+      "generate_secret": false,
+      "explicit_auth_flows": [
+        "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+        "ALLOW_CUSTOM_AUTH",
+        "ALLOW_USER_SRP_AUTH",
+        "ALLOW_REFRESH_TOKEN_AUTH",
+        "ALLOW_USER_PASSWORD_AUTH"
+      ]
+    }
+  }
+}
