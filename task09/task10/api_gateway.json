@@ -1,0 +1,42 @@
+{
+    "name": "task10_api",
+    "stageName": "api",
+    "resources": [
+      {
+        "path": "/signup",
+        "method": "POST",
+        "lambdaFunction": "api_handler"
+      },
+      {
+        "path": "/signin",
+        "method": "POST",
+        "lambdaFunction": "api_handler"
+      },
+      {
+        "path": "/tables",
+        "method": "GET",
+        "lambdaFunction": "api_handler"
+      },
+      {
+        "path": "/tables",
+        "method": "POST",
+        "lambdaFunction": "api_handler"
+      },
+      {
+        "path": "/tables/{tableId}",
+        "method": "GET",
+        "lambdaFunction": "api_handler"
+      },
+      {
+        "path": "/reservations",
+        "method": "POST",
+        "lambdaFunction": "api_handler"
+      },
+      {
+        "path": "/reservations",
+        "method": "GET",
+        "lambdaFunction": "api_handler"
+      }
+    ]
+  }
+  

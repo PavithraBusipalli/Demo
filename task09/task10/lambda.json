@@ -1,0 +1,11 @@
+{
+    "name": "api_handler",
+    "runtime": "python3.8",
+    "handler": "index.lambda_handler",
+    "memorySize": 128,
+    "timeout": 30,
+    "environment": {
+      "USER_POOL_ID": "${booking_userpool}"
+    }
+  }
+  

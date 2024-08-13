@@ -1,0 +1,35 @@
+{
+    "tables": [
+      {
+        "name": "Tables",
+        "keySchema": [
+          {
+            "attributeName": "id",
+            "keyType": "HASH"
+          }
+        ],
+        "attributeDefinitions": [
+          {
+            "attributeName": "id",
+            "attributeType": "N"
+          }
+        ]
+      },
+      {
+        "name": "Reservations",
+        "keySchema": [
+          {
+            "attributeName": "reservationId",
+            "keyType": "HASH"
+          }
+        ],
+        "attributeDefinitions": [
+          {
+            "attributeName": "reservationId",
+            "attributeType": "S"
+          }
+        ]
+      }
+    ]
+  }
+  
